@@ -34,6 +34,7 @@ const Button = styled.button`
   font-size: 1rem;
   font-weight: bold;
   border-radius: 5px;
+  cursor: pointer;
 `;
 
 const Error = styled.p`
@@ -120,6 +121,7 @@ const UserForm = () => {
     validateFieldsOnSubmit(userData)
   };
 
+  const buttonDisabled = Object.values(validationErrors).find(value => !!value);
   return (
     <>
       <h1>User Form</h1>
@@ -139,7 +141,7 @@ const UserForm = () => {
               {validationErrors[name] && <Error>{validationErrors[name]}</Error>}
             </FormField>
           )}
-          <Button onClick={onClick}>Check</Button>
+          <Button onClick={onClick} disabled={buttonDisabled}>Check</Button>
       </Form>
     </>
   );

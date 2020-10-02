@@ -4,21 +4,26 @@ import useFormValidation from "../hooks/useFormValidation";
 export const phoneRegularExp = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/;
 export const emailRegularExp = /\S+@\S+\.\S+/;
 
-const phoneRegErrorText = 'Phone number is not valid';
-const emailRegErrorText = 'Email is not valid';
+const fields = {
+  email: 'Email',
+  phone: 'Phone number'
+};
+
+const regExpErrorText = field => `${field} is not valid`;
+const requiredErrorText = field => `${field} field is required`;
 
 const validationSchema = {
   email: {
     isRequired: true,
     regexp: emailRegularExp,
-    regErrorText: emailRegErrorText,
-    requiredTextError: 'Email field is required',
+    regErrorText: regExpErrorText(fields.email),
+    requiredTextError: requiredErrorText(fields.email),
   },
   phone: {
     isRequired: true,
     regexp: phoneRegularExp,
-    regErrorText: phoneRegErrorText,
-    requiredTextError: 'Phone field is required',
+    regErrorText: regExpErrorText(fields.phone),
+    requiredTextError: requiredErrorText(fields.phone),
   },
   firstName: {
     isRequired: false,
@@ -31,8 +36,6 @@ const validationSchema = {
 const useUserFormValidation = () => {
   const [validationErrors, setValidationErrors] = useState({
     email: '',
-    firstName: '',
-    lastName: '',
     phone: '',
   });
 
