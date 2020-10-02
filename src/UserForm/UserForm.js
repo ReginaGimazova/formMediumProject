@@ -122,7 +122,8 @@ const UserForm = () => {
     },
   ];
 
-  const onClick = () => {
+  const onClick = event => {
+    event.preventDefault();
     validateFieldsOnSubmit(userData)
   };
 
@@ -146,7 +147,7 @@ const UserForm = () => {
               {validationErrors[name] && <Error>{validationErrors[name]}</Error>}
             </FormField>
           )}
-          <Button onClick={onClick} disabled={buttonDisabled}>Check</Button>
+          <Button onClick={onClick} >Check</Button>
       </Form>
     </>
   );

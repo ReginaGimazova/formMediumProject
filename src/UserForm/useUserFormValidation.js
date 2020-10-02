@@ -16,14 +16,14 @@ const validationSchema = {
   email: {
     isRequired: true,
     regexp: emailRegularExp,
-    regErrorText: regExpErrorText(fields.email),
-    requiredTextError: requiredErrorText(fields.email),
+    regexpErrorText: regExpErrorText(fields.email),
+    requiredErrorText: requiredErrorText(fields.email),
   },
   phone: {
     isRequired: true,
     regexp: phoneRegularExp,
-    regErrorText: regExpErrorText(fields.phone),
-    requiredTextError: requiredErrorText(fields.phone),
+    regexpErrorText: regExpErrorText(fields.phone),
+    requiredErrorText: requiredErrorText(fields.phone),
   },
   firstName: {
     isRequired: false,

@@ -1,21 +1,38 @@
+const requiredErrorText = 'This field is required.';
+const regExpErrorText = 'This field is not valid';
+
+const checkRequiredField = ({schemaElement, value}) => {
+  const requiredLength = schemaElement.minLength;
+  const elementValidationFailed = !value || (requiredLength && value.length < requiredLength);
+
+  return elementValidationFailed && (schemaElement.requiredErrorText || requiredErrorText);
+};
+
+const checkRegExpForField = ({schemaElement, value}) => {
+  const elementValidationFailed = !value.match(schemaElement.regexp);
+  return elementValidationFailed && (schemaElement.regexpErrorText || regExpErrorText);
+};
+
 const useFormValidation = ({ validationSchema, validationErrors, setValidationErrors }) => {
-  const requiredErrorText = 'This field is required.';
 
   const validateOnBlur = ({ name, value }) => {
-    const fieldValue = validationSchema[name];
+    const schemaElement = validationSchema[name];
 
-    if (fieldValue.isRequired) {
-      const requiredLength = fieldValue?.minLength;
-      const elementValidationFailed = !value || (requiredLength && value.length < requiredLength);
+    if (schemaElement.isRequired) {
+      const error = checkRequiredField({schemaElement, value});
 
       setValidationErrors({
         ...validationErrors,
-        [name]: elementValidationFailed && (fieldValue.requiredTextError || requiredErrorText),
+        [name]: error,
       });
     }
 
-    if (fieldValue.regexp && !value.match(fieldValue.regexp) && value) {
-      setValidationErrors({ ...validationErrors, [name]: fieldValue.regErrorText });
+    if (schemaElement.regexp && value) {
+      const error = checkRegExpForField({schemaElement, value});
+      setValidationErrors({
+        ...validationErrors,
+        [name]: error
+      })
     }
   };
 
@@ -25,29 +42,20 @@ const useFormValidation = ({ validationSchema, validationErrors, setValidationEr
     const updatedState = {};
     Object.assign(updatedState, validationErrors);
 
-    Object.keys(validationErrors).forEach(key => {
-      const field = {
-        data: data[key],
-        validation: validationSchema[key] || {},
-      };
-
-      const requiredLength = field.validation && field.validation.minLength;
-      const requiredField = !field.data && field.validation.isRequired;
-      const elementValidationFailed = requiredField || (requiredLength && field.data.length < requiredLength);
-
-      updatedState[key] = elementValidationFailed ? field.validation.requiredTextError || requiredErrorText : '';
-
-      isValid = isValid && !!field.data && !elementValidationFailed;
-    });
-
     Object.keys(validationSchema).forEach(key => {
-      if (validationSchema[key].regexp) {
-        const isMatch = !!data[key].match(validationSchema[key].regexp);
-        isValid = isValid && isMatch;
+      const value = data[key];
+      const schemaElement = validationSchema[key];
 
-        if (!isMatch && !!data[key]) {
-          updatedState[key] = validationSchema[key].regErrorText;
-        }
+      if (schemaElement.isRequired){
+        const error = checkRequiredField({schemaElement, value});
+        isValid = isValid && !!value && !error;
+        updatedState[key] = error;
+      }
+
+      if (schemaElement.regexp && value){
+        const error = checkRegExpForField({schemaElement, value});
+        isValid = isValid && error;
+        updatedState[key] = error;
       }
     });
 
