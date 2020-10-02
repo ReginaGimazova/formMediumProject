@@ -2,18 +2,20 @@ const useFormValidation = ({ validationSchema, validationErrors, setValidationEr
   const requiredErrorText = 'This field is required.';
 
   const validateOnBlur = ({ name, value }) => {
-    if (validationSchema[name].isRequired) {
-      const requiredLength = validationSchema[name] && validationSchema[name].minLength;
+    const fieldValue = validationSchema[name];
+
+    if (fieldValue.isRequired) {
+      const requiredLength = fieldValue?.minLength;
       const elementValidationFailed = !value || (requiredLength && value.length < requiredLength);
 
       setValidationErrors({
         ...validationErrors,
-        [name]: elementValidationFailed ? validationSchema[name].requiredTextError || requiredErrorText : '',
+        [name]: elementValidationFailed && (fieldValue.requiredTextError || requiredErrorText),
       });
     }
 
-    if (validationSchema[name].regexp && !value.match(validationSchema[name].regexp) && value) {
-      setValidationErrors({ ...validationErrors, [name]: validationSchema[name].regErrorText });
+    if (fieldValue.regexp && !value.match(fieldValue.regexp) && value) {
+      setValidationErrors({ ...validationErrors, [name]: fieldValue.regErrorText });
     }
   };
 

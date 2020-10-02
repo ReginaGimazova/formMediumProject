@@ -35,6 +35,11 @@ const Button = styled.button`
   font-weight: bold;
   border-radius: 5px;
   cursor: pointer;
+  
+  &:disabled {
+    background-color: #006400;
+    cursor: default;
+  }
 `;
 
 const Error = styled.p`
